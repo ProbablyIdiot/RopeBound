@@ -1,19 +1,25 @@
-[gd_scene load_steps=6 format=3 uid="uid://bgj13c673b7eq"]
+[gd_scene load_steps=9 format=3 uid="uid://bgj13c673b7eq"]
 
 [ext_resource type="Script" path="res://Player/Player1.gd" id="1_7w3tq"]
 [ext_resource type="Texture2D" uid="uid://c5um35b047k5t" path="res://icon.svg" id="1_8g4sp"]
+[ext_resource type="PhysicsMaterial" uid="uid://cx2ksvuljbqh5" path="res://Player/player_material.tres" id="1_h4r21"]
 [ext_resource type="PackedScene" uid="uid://canc1lf28b205" path="res://Player/ropeSegment.tscn" id="2_lhr6e"]
+[ext_resource type="Script" path="res://Player/Player2.gd" id="3_nf0n0"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_f4sf6"]
-radius = 33.0
-height = 100.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ldiqa"]
+size = Vector2(66, 102)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1jj2c"]
-size = Vector2(66, 2)
+size = Vector2(66, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2n53s"]
+size = Vector2(66, 100)
 
 [node name="Players" type="Node2D"]
 
 [node name="Player1" type="RigidBody2D" parent="."]
+physics_material_override = ExtResource("1_h4r21")
+continuous_cd = 2
 max_contacts_reported = 1
 contact_monitor = true
 lock_rotation = true
@@ -25,18 +31,23 @@ scale = Vector2(0.507813, 0.789063)
 texture = ExtResource("1_8g4sp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player1"]
-position = Vector2(141, 150)
-shape = SubResource("CapsuleShape2D_f4sf6")
+position = Vector2(141, 149)
+shape = SubResource("RectangleShape2D_ldiqa")
 
 [node name="floorCheck" type="Area2D" parent="Player1"]
 
 [node name="floorCheck" type="CollisionShape2D" parent="Player1/floorCheck"]
-position = Vector2(141, 201)
+position = Vector2(141, 208)
 shape = SubResource("RectangleShape2D_1jj2c")
-disabled = true
+one_way_collision_margin = 0.0
+debug_color = Color(0.972549, 0, 0, 0.419608)
 
 [node name="Player2" type="RigidBody2D" parent="."]
+position = Vector2(-62, 0)
+physics_material_override = ExtResource("1_h4r21")
+continuous_cd = 2
 lock_rotation = true
+script = ExtResource("3_nf0n0")
 
 [node name="Icon" type="Sprite2D" parent="Player2"]
 position = Vector2(433, 150)
@@ -45,9 +56,18 @@ texture = ExtResource("1_8g4sp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player2"]
 position = Vector2(433, 150)
-shape = SubResource("CapsuleShape2D_f4sf6")
+shape = SubResource("RectangleShape2D_2n53s")
+
+[node name="floorCheck" type="Area2D" parent="Player2"]
+
+[node name="floorCheck" type="CollisionShape2D" parent="Player2/floorCheck"]
+position = Vector2(432, 208)
+shape = SubResource("RectangleShape2D_1jj2c")
+one_way_collision_margin = 0.0
+debug_color = Color(0.972549, 0, 0, 0.419608)
 
 [node name="ropeContainer" type="Node2D" parent="."]
+position = Vector2(-30, 2)
 
 [node name="PinJoint2D" type="PinJoint2D" parent="ropeContainer"]
 position = Vector2(172, 147)
@@ -119,11 +139,7 @@ position = Vector2(401, 148)
 node_a = NodePath("../RigidBody2D6")
 node_b = NodePath("../../Player2")
 
-[node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
-position = Vector2(171, 146)
-rotation = -1.5708
-node_a = NodePath("../Player1")
-node_b = NodePath("../Player2")
-length = 230.0
-rest_length = 200.0
-stiffness = 64.0
+[connection signal="body_entered" from="Player1/floorCheck" to="Player1" method="_on_floor_check_body_entered"]
+[connection signal="body_exited" from="Player1/floorCheck" to="Player1" method="_on_floor_check_body_exited"]
+[connection signal="body_entered" from="Player2/floorCheck" to="Player2" method="_on_floor_check_body_entered"]
+[connection signal="body_exited" from="Player2/floorCheck" to="Player2" method="_on_floor_check_body_exited"]
