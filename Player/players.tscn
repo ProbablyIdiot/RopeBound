@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bgj13c673b7eq"]
+[gd_scene load_steps=6 format=3 uid="uid://bgj13c673b7eq"]
 
 [ext_resource type="Script" path="res://Player/Player1.gd" id="1_7w3tq"]
 [ext_resource type="Texture2D" uid="uid://c5um35b047k5t" path="res://icon.svg" id="1_8g4sp"]
@@ -8,9 +8,14 @@
 radius = 33.0
 height = 100.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1jj2c"]
+size = Vector2(66, 2)
+
 [node name="Players" type="Node2D"]
 
 [node name="Player1" type="RigidBody2D" parent="."]
+max_contacts_reported = 1
+contact_monitor = true
 lock_rotation = true
 script = ExtResource("1_7w3tq")
 
@@ -23,9 +28,12 @@ texture = ExtResource("1_8g4sp")
 position = Vector2(141, 150)
 shape = SubResource("CapsuleShape2D_f4sf6")
 
-[node name="RayCast2D" type="RayCast2D" parent="Player1"]
-position = Vector2(141, 193)
-target_position = Vector2(0, 15)
+[node name="floorCheck" type="Area2D" parent="Player1"]
+
+[node name="floorCheck" type="CollisionShape2D" parent="Player1/floorCheck"]
+position = Vector2(141, 201)
+shape = SubResource("RectangleShape2D_1jj2c")
+disabled = true
 
 [node name="Player2" type="RigidBody2D" parent="."]
 lock_rotation = true
